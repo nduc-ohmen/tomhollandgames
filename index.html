@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tom Holland Quiz · Spider‑Scramble + GIFs!</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&amp;family=Comic+Neue:wght@700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    .font-bangers { font-family: 'Bangers', cursive; }
+    .font-comic { font-family: 'Comic Neue', cursive; }
+    .halftone {
+      background-image: radial-gradient(circle, #000 1px, transparent 1px);
+      background-size: 8px 8px;
+      opacity: 0.1;
+    }
+    .action-lines {
+      background: 
+        repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(255,255,0,0.3) 20px, rgba(255,255,0,0.3) 22px),
+        repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(255,0,0,0.2) 20px, rgba(255,0,0,0.2) 22px);
+    }
+    .starburst {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, filter 0.2s;
+    }
+    .starburst:hover { transform: scale(1.1); filter: brightness(1.1); }
+    .starburst:active { transform: scale(0.95); }
+    .starburst svg { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
+
+    @keyframes pulse {
+      0% { transform: scale(1); filter: drop-shadow(0 0 0 #FFD93D); }
+      50% { transform: scale(1.15); filter: drop-shadow(0 0 15px #FFD93D); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 0 #FFD93D); }
+    }
+    .pulse-start { animation: pulse 1.5s infinite ease-in-out; }
+
+    .speech-bubble {
+      position: relative;
+      background: #fff;
+      border: 4px solid #000;
+      border-radius: 20px;
+      padding: 20px 30px;
+      box-shadow: 8px 8px 0 #000;
+    }
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -30px;
+      left: 40px;
+      width: 0;
+      height: 0;
+      border: 20px solid transparent;
+      border-top-color: #000;
+      border-bottom: 0;
+    }
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -22px;
+      left: 44px;
+      width: 0;
+      height: 0;
+      border: 16px solid transparent;
+      border-top-color: #fff;
+      border-bottom: 0;
+      z-index: 1;
+    }
+    .comic-panel { border: 5px solid #000; box-shadow: 10px 10px 0 #000; }
+    @keyframes pow { 0% { transform: scale(0) rotate(-10deg); opacity: 0; } 50% { transform: scale(1.2) rotate(5deg); opacity: 1; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+    .pow-animate { animation: pow 0.5s ease-out forwards; }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+    .shake { animation: shake 0.4s ease-in-out; }
+    .zoom-lines { background: linear-gradient(45deg, transparent 45%, rgba(255,255,0,0.5) 45%, rgba(255,255,0,0.5) 55%, transparent 55%), linear-gradient(-45deg, transparent 45%, rgba(255,0,0,0.3) 45%, rgba(255,0,0,0.3) 55%, transparent 55%), linear-gradient(90deg, transparent 45%, rgba(0,100,255,0.3) 45%, rgba(0,100,255,0.3) 55%, transparent 55%); background-size: 60px 60px; }
+    .dots-overlay::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.15) 2px, transparent 2px);
+      background-size: 12px 12px;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .photo-frame {
+      border: 4px solid #000;
+      box-shadow: 6px 6px 0 #000;
+      background: white;
+      padding: 6px;
+      transform: rotate(1deg);
+      display: inline-block;
+    }
+    .photo-frame img { display: block; width: 100%; height: auto; object-fit: cover; }
+
+    .tv-frame {
+      border: 6px solid #1e1e1e;
+      border-radius: 20px 20px 10px 10px;
+      box-shadow: 8px 8px 0 #000, inset 0 0 0 3px #f0c0a0;
+      background: #000;
+      padding: 8px;
+      position: relative;
+      max-width: 100%;
+    }
+    .tv-frame::before {
+      content: '📺';
+      position: absolute;
+      top: -25px;
+      right: 20px;
+      font-size: 30px;
+      transform: rotate(10deg);
+      background: #ffd93d;
+      border-radius: 50%;
+      padding: 5px 10px;
+      border: 2px solid #000;
+      box-shadow: 4px 4px 0 #000;
+    }
+    .tv-frame iframe {
+      border: 2px solid #aaa;
+      border-radius: 12px;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16/9;
+    }
+
+    .gif-frame {
+      border: 4px solid #000;
+      box-shadow: 8px 8px 0 #000;
+      background: #fff;
+      padding: 6px;
+      display: inline-block;
+      max-width: 100%;
+      min-height: 140px;
+    }
+    .gif-frame img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 160px;
+      object-fit: cover;
+      border: 2px solid #333;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+</head>
+<body class="h-full m-0 p-0 overflow-auto">
+<div id="app" class="w-full min-h-full relative overflow-hidden" style="background: linear-gradient(135deg, #FF3B3B 0%, #FFD93D 50%, #3B82F6 100%);">
+  <div class="absolute inset-0 halftone pointer-events-none"></div>
+  <div class="absolute inset-0 action-lines pointer-events-none"></div>
+
+  <!-- ========== TITLE SCREEN ========== -->
+  <div id="title-screen" class="relative z-10 min-h-full flex flex-col items-center justify-center p-6">
+    <div class="absolute top-4 left-4 text-6xl sm:text-8xl transform -rotate-12">💥</div>
+    <div class="absolute top-8 right-8 text-5xl sm:text-7xl transform rotate-12">⭐</div>
+    <div class="absolute bottom-12 left-8 text-4xl sm:text-6xl transform rotate-6">🕷️</div>
+    <div class="absolute bottom-8 right-12 text-5xl sm:text-7xl transform -rotate-6">💫</div>
+    <div class="absolute top-1/4 right-1/4 text-6xl sm:text-7xl">🎬</div>
+    <div class="absolute bottom-1/3 left-1/4 text-5xl sm:text-6xl">🎥</div>
+    
+    <div class="absolute top-20 left-2 sm:left-10 w-24 sm:w-32 photo-frame transform -rotate-3">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23e63946' stroke='%23000' stroke-width='4'/%3E%3Cpath d='M30 30 L70 70 M70 30 L30 70' stroke='%23000' stroke-width='6'/%3E%3Ccircle cx='35' cy='40' r='6' fill='%23fff'/%3E%3Ccircle cx='65' cy='40' r='6' fill='%23fff'/%3E%3C/svg%3E" alt="Spider-Man mask">
+    </div>
+    <div class="absolute bottom-20 right-2 sm:right-10 w-28 sm:w-36 photo-frame transform rotate-3">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23333'/%3E%3Ccircle cx='50' cy='40' r='25' fill='%23f1c40f' stroke='%23000' stroke-width='3'/%3E%3Ccircle cx='38' cy='35' r='4' fill='%23000'/%3E%3Ccircle cx='62' cy='35' r='4' fill='%23000'/%3E%3Cpath d='M40 55 Q50 70,60 55' stroke='%23000' stroke-width='4' fill='none'/%3E%3C/svg%3E" alt="Tom Holland silhouette">
+    </div>
+
+    <div class="comic-panel bg-white p-6 sm:p-10 transform -rotate-1 relative dots-overlay max-w-2xl w-full">
+      <div class="relative z-10">
+        <div class="absolute -top-8 -right-8 w-24 h-24 sm:w-32 sm:h-32">
+          <svg viewbox="0 0 100 100"><polygon points="50,0 61,35 97,35 68,57 79,91 50,70 21,91 32,57 3,35 39,35" fill="#FFD93D" stroke="#000" stroke-width="2"/></svg>
+        </div>
+        <h1 id="main-title" class="font-bangers text-4xl sm:text-6xl md:text-7xl text-center leading-tight" style="color: #FF3B3B; text-shadow: 4px 4px 0 #000, -2px -2px 0 #FFD93D;">HOW WELL DO YOU KNOW<br><span style="color: #3B82F6; font-size: 1.2em;">TOM HOLLAND?</span></h1>
+        <div class="flex justify-center my-4 sm:my-6">
+          <svg width="120" height="40" viewbox="0 0 120 40"><path d="M0,20 Q30,0 60,20 Q90,40 120,20" fill="none" stroke="#000" stroke-width="3"/><circle cx="60" cy="20" r="8" fill="#FF3B3B" stroke="#000" stroke-width="2"/><path d="M52,20 L68,20 M60,12 L60,28" stroke="#000" stroke-width="2"/></svg>
+        </div>
+        <p class="font-comic text-xl sm:text-2xl text-center text-black mt-4">Test your knowledge about everyone's favorite web-slinger! 🕸️</p>
+      </div>
+    </div>
+
+    <!-- Video frame on title screen -->
+    <div class="tv-frame w-full max-w-lg mt-6 sm:mt-8">
+      <iframe id="titleVideo" src="https://www.youtube.com/embed/JfVOs4VSpmA?si=wL0SYn4D2tM1xEqI&controls=1&modestbranding=1&rel=0" title="Spider-Man: No Way Home trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+    <p class="font-comic text-sm sm:text-base text-black mt-1 bg-white px-3 py-1 border-2 border-black rounded-full">🔊 Watch the trailer!</p>
+
+    <!-- Start Button -->
+    <div class="relative mt-6 sm:mt-8 flex flex-col items-center">
+      <button id="start-btn" onclick="startQuiz()" class="starburst pulse-start w-48 h-48 sm:w-56 sm:h-56 cursor-pointer border-0 bg-transparent">
+        <svg viewbox="0 0 100 100"><polygon points="50,5 58,35 90,35 65,55 75,85 50,65 25,85 35,55 10,35 42,35" fill="#FFD93D" stroke="#000" stroke-width="3"/></svg>
+        <span id="start-text" class="relative z-10 font-bangers text-2xl sm:text-3xl text-black">START!</span>
+      </button>
+      <span class="font-comic text-lg bg-white border-2 border-black px-4 py-1 rounded-full mt-2 animate-bounce inline-block">👉 CLICK ME! 👈</span>
+    </div>
+  </div>
+
+  <!-- ========== QUESTION SCREEN ========== -->
+  <div id="question-screen" class="hidden relative z-10 min-h-full flex flex-col items-center justify-start p-4 sm:p-6 py-8">
+    <div class="absolute top-4 left-4 w-16 sm:w-20 photo-frame transform -rotate-6">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23333'/%3E%3Cpath d='M25 40 L75 40 L60 70 L40 70 Z' fill='%23e63946'/%3E%3C/svg%3E" alt="spider">
+    </div>
+    <div class="absolute bottom-16 right-4 w-20 sm:w-24 photo-frame transform rotate-6">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23333'/%3E%3Ctext x='10' y='55' fill='%23f1c40f' font-size='14' font-family='Arial'%3ETOM%3C/text%3E%3C/svg%3E" alt="Tom">
+    </div>
+    <div class="absolute top-12 left-4 text-5xl sm:text-6xl">💥</div>
+    <div class="absolute top-1/2 right-4 text-4xl sm:text-5xl">⭐</div>
+    <div class="absolute bottom-16 left-8 text-4xl sm:text-5xl">🎬</div>
+
+    <div class="w-full max-w-2xl mb-4 sm:mb-6">
+      <div class="comic-panel bg-white p-2 sm:p-3">
+        <div class="flex justify-between items-center font-comic text-base sm:text-lg font-bold">
+          <span>Question <span id="current-q">1</span>/10</span>
+          <span>Score: <span id="score">0</span></span>
+        </div>
+        <div class="h-3 sm:h-4 bg-gray-200 border-2 border-black mt-2 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full transition-all duration-500" style="width: 10%; background: linear-gradient(90deg, #FF3B3B, #FFD93D, #3B82F6);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GIF container -->
+    <div class="gif-frame mb-4">
+      <img id="question-gif" src="" alt="Tom Holland GIF" class="w-full max-w-xs sm:max-w-sm" style="background-color: #f0f0f0;">
+    </div>
+
+    <!-- Question bubble -->
+    <div class="speech-bubble max-w-2xl w-full mb-8 sm:mb-12">
+      <p id="question-text" class="font-comic text-xl sm:text-2xl md:text-3xl text-black text-center font-bold">Question goes here?</p>
+    </div>
+
+    <!-- Answer buttons grid -->
+    <div class="grid grid-cols-2 gap-4 sm:gap-6 max-w-2xl w-full px-2">
+      <button onclick="checkAnswer(0)" class="starburst-btn group relative cursor-pointer border-0 bg-transparent p-0 min-h-24 sm:min-h-32" data-index="0">
+        <svg viewbox="0 0 200 100" class="w-full h-full absolute top-0 left-0"><polygon points="100,5 120,20 180,15 160,40 195,60 150,65 140,95 100,75 60,95 50,65 5,60 40,40 20,15 80,20" fill="#FF3B3B" stroke="#000" stroke-width="4" class="transition-all group-hover:fill-red-400"/></svg>
+        <div class="relative z-10 flex flex-col items-center justify-center h-full p-2"><span class="font-bangers text-2xl sm:text-3xl text-white" style="text-shadow:2px 2px 0 #000;">A</span><span id="answer-a" class="font-comic text-base sm:text-lg md:text-xl text-white text-center px-2 font-bold" style="text-shadow:2px 2px 0 #000;">Answer A</span></div>
+      </button>
+      <button onclick="checkAnswer(1)" class="starburst-btn group relative cursor-pointer border-0 bg-transparent p-0 min-h-24 sm:min-h-32" data-index="1">
+        <svg viewbox="0 0 200 100" class="w-full h-full absolute top-0 left-0"><polygon points="100,5 120,20 180,15 160,40 195,60 150,65 140,95 100,75 60,95 50,65 5,60 40,40 20,15 80,20" fill="#3B82F6" stroke="#000" stroke-width="4" class="transition-all group-hover:fill-blue-400"/></svg>
+        <div class="relative z-10 flex flex-col items-center justify-center h-full p-2"><span class="font-bangers text-2xl sm:text-3xl text-white" style="text-shadow:2px 2px 0 #000;">B</span><span id="answer-b" class="font-comic text-base sm:text-lg md:text-xl text-white text-center px-2 font-bold" style="text-shadow:2px 2px 0 #000;">Answer B</span></div>
+      </button>
+      <button onclick="checkAnswer(2)" class="starburst-btn group relative cursor-pointer border-0 bg-transparent p-0 min-h-24 sm:min-h-32" data-index="2">
+        <svg viewbox="0 0 200 100" class="w-full h-full absolute top-0 left-0"><polygon points="100,5 120,20 180,15 160,40 195,60 150,65 140,95 100,75 60,95 50,65 5,60 40,40 20,15 80,20" fill="#FFD93D" stroke="#000" stroke-width="4" class="transition-all group-hover:fill-yellow-300"/></svg>
+        <div class="relative z-10 flex flex-col items-center justify-center h-full p-2"><span class="font-bangers text-2xl sm:text-3xl text-black" style="text-shadow:2px 2px 0 #fff;">C</span><span id="answer-c" class="font-comic text-base sm:text-lg md:text-xl text-black text-center px-2 font-bold" style="text-shadow:1px 1px 0 #fff;">Answer C</span></div>
+      </button>
+      <button onclick="checkAnswer(3)" class="starburst-btn group relative cursor-pointer border-0 bg-transparent p-0 min-h-24 sm:min-h-32" data-index="3">
+        <svg viewbox="0 0 200 100" class="w-full h-full absolute top-0 left-0"><polygon points="100,5 120,20 180,15 160,40 195,60 150,65 140,95 100,75 60,95 50,65 5,60 40,40 20,15 80,20" fill="#10B981" stroke="#000" stroke-width="4" class="transition-all group-hover:fill-emerald-400"/></svg>
+        <div class="relative z-10 flex flex-col items-center justify-center h-full p-2"><span class="font-bangers text-2xl sm:text-3xl text-white" style="text-shadow:2px 2px 0 #000;">D</span><span id="answer-d" class="font-comic text-base sm:text-lg md:text-xl text-white text-center px-2 font-bold" style="text-shadow:2px 2px 0 #000;">Answer D</span></div>
+      </button>
+    </div>
+
+    <!-- Feedback popup -->
+    <div id="feedback" class="hidden fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+      <div id="feedback-content" class="comic-panel p-6 sm:p-8 transform pow-animate">
+        <p id="feedback-text" class="font-bangers text-4xl sm:text-6xl text-center"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== RESULTS SCREEN ========== -->
+  <div id="results-screen" class="hidden relative z-10 min-h-full flex flex-col items-center justify-center p-4 sm:p-6">
+    <div class="absolute top-4 left-4 w-24 sm:w-32 photo-frame transform -rotate-3">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23e63946'/%3E%3Ccircle cx='50' cy='40' r='20' fill='%23f1c40f'/%3E%3C/svg%3E" alt="spider">
+    </div>
+    <div class="absolute bottom-4 right-4 w-28 sm:w-36 photo-frame transform rotate-3">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23333'/%3E%3Ctext x='25' y='60' fill='white' font-size='14'%3EHOLLAND%3C/text%3E%3C/svg%3E" alt="Tom">
+    </div>
+    <div class="absolute top-4 right-4 text-4xl sm:text-6xl">🎉</div>
+    <div class="absolute bottom-8 left-4 text-4xl sm:text-5xl">🕷️</div>
+
+    <div class="comic-panel bg-white p-6 sm:p-8 max-w-xl w-full text-center dots-overlay">
+      <div class="relative z-10">
+        <h2 class="font-bangers text-4xl sm:text-5xl md:text-6xl mb-4" style="color: #FF3B3B; text-shadow: 3px 3px 0 #000;">QUIZ COMPLETE!</h2>
+        <div class="my-6 sm:my-8">
+          <p class="font-comic text-xl sm:text-2xl text-black mb-2">Your Score:</p>
+          <p id="final-score" class="font-bangers text-6xl sm:text-7xl md:text-8xl" style="color: #3B82F6; text-shadow: 4px 4px 0 #FFD93D;">0/10</p>
+        </div>
+        <p id="result-message" class="font-comic text-lg sm:text-xl text-black mb-4">Message goes here!</p>
+        
+        <!-- Video on results screen -->
+        <div class="tv-frame w-full max-w-md mx-auto mt-2 mb-4">
+          <iframe id="resultsVideo" src="https://www.youtube.com/embed/6ZfuNTqbHE8?si=J8kL3p9R5vF7q2Xc&controls=1&modestbranding=1&rel=0" title="Avengers: Infinity War trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <p class="font-comic text-xs sm:text-sm text-black mb-3">🎬 Spider-Man in Avengers: Infinity War</p>
+
+        <button onclick="restartQuiz()" class="starburst w-40 h-40 sm:w-48 sm:h-48 cursor-pointer border-0 bg-transparent mx-auto block">
+          <svg viewbox="0 0 100 100"><polygon points="50,5 58,35 90,35 65,55 75,85 50,65 25,85 35,55 10,35 42,35" fill="#10B981" stroke="#000" stroke-width="3"/></svg>
+          <span class="relative z-10 font-bangers text-xl sm:text-2xl text-white" style="text-shadow: 2px 2px 0 #000;">PLAY AGAIN!</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- SOUND EFFECTS (Web Audio API) ----------
+    let audioCtx = null;
+    function initAudio() { if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} } }
+    function playSound(type) {
+      initAudio();
+      if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      if (type === 'correct') {
+        osc.frequency.value = 880.0;
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      } else {
+        osc.frequency.value = 220.0;
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+      }
+      osc.start();
+      osc.stop(audioCtx.currentTime + (type==='correct'?0.3:0.4));
+    }
+
+    // ---------- VIDEO CONTROL ----------
+    const titleIframe = document.getElementById('titleVideo');
+    const resultsIframe = document.getElementById('resultsVideo');
+    const TITLE_VIDEO_SRC = "https://www.youtube.com/embed/JfVOs4VSpmA?si=wL0SYn4D2tM1xEqI&controls=1&modestbranding=1&rel=0";
+    const RESULTS_VIDEO_SRC = "https://www.youtube.com/embed/6ZfuNTqbHE8?si=J8kL3p9R5vF7q2Xc&controls=1&modestbranding=1&rel=0";
+
+    // ---------- QUIZ DATA ----------
+    const baseQuestions = [
+      { question: "What is Tom Holland's full name?", answers: ["Thomas Stanley Holland", "Thomas James Holland", "Thomas William Holland", "Thomas Henry Holland"], correct: 0 },
+      { question: "In which year was Tom Holland born?", answers: ["1994", "1996", "1998", "2000"], correct: 1 },
+      { question: "What was Tom Holland's first major role before Spider-Man?", answers: ["The Impossible", "Billy Elliot the Musical", "In the Heart of the Sea", "How I Live Now"], correct: 1 },
+      { question: "Which film marked Tom's debut as Spider-Man?", answers: ["Spider-Man: Homecoming", "Captain America: Civil War", "Avengers: Infinity War", "Spider-Man: Far From Home"], correct: 1 },
+      { question: "What sport did Tom Holland train in as a child?", answers: ["Football", "Gymnastics", "Ballet & Dance", "Swimming"], correct: 2 },
+      { question: "How many brothers does Tom Holland have?", answers: ["One", "Two", "Three", "None"], correct: 2 },
+      { question: "What is the name of Tom Holland's production company?", answers: ["Web Productions", "Holland Studios", "The Brothers Trust", "Spider Films"], correct: 2 },
+      { question: "Which city was Tom Holland born in?", answers: ["Manchester", "London", "Birmingham", "Liverpool"], correct: 1 },
+      { question: "In Uncharted (2022), which video game character does Tom play?", answers: ["Sully", "Nathan Drake", "Sam Drake", "Rafe Adler"], correct: 1 },
+      { question: "What is Tom Holland famously known for accidentally doing?", answers: ["Forgetting his lines", "Spoiling Marvel movies", "Missing premieres", "Falling during stunts"], correct: 1 }
+    ];
+
+    // ✅ Updated GIFs - all your requested links!
+    const questionGifs = [
+      "https://media3.giphy.com/media/8ie7JFGX3iWEE/giphy.gif", // Q0: Full name
+      "https://media4.giphy.com/media/kstNJIHJyO8h3DUJve/giphy.gif", // Q1: Birth year
+      "https://media1.giphy.com/media/uIPnfJ5VK0vXJExFre/giphy.gif", // Q2: First major role
+      "https://i.imgur.com/ALOYSdb.gif", // Q3: Debut as Spider-Man (YOUR NEW LINK)
+      "https://media2.giphy.com/media/PzydsqG2EyFYkYF6yf/giphy.gif", // Q4: Sport (unchanged)
+      "https://i.pinimg.com/originals/44/46/16/4446160a0a97c7ac1ad8299b1b7dbeb3.gif", // Q5: Brothers (your Pin link)
+      "https://media0.giphy.com/media/SF9Z0shNT07T2/giphy.gif", // Q6: Production company
+      "https://media1.giphy.com/media/0CtFN4lxf5t8Bzi0ry/giphy.gif", // Q7: Birth city
+      "https://media2.giphy.com/media/PzydsqG2EyFYkYF6yf/giphy.gif", // Q8: Uncharted (updated)
+      "https://media.giphy.com/media/26tPpK1y0I1YxSxOM/giphy.gif"  // Q9: Spoilers (kept working one)
+    ];
+
+    const fallbackGif = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='20' y='55' font-family='Comic Neue' font-size='18' fill='%23000'%3ETom GIF%3C/text%3E%3C/svg%3E";
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function shuffleAnswers(questionObj) {
+      const correctAnswerText = questionObj.answers[questionObj.correct];
+      const shuffledAnswers = shuffleArray([...questionObj.answers]);
+      const newCorrectIndex = shuffledAnswers.indexOf(correctAnswerText);
+      return {
+        question: questionObj.question,
+        answers: shuffledAnswers,
+        correct: newCorrectIndex
+      };
+    }
+
+    let questions = (function() {
+      let shuffled = shuffleArray([...baseQuestions]);
+      shuffled = shuffled.map(q => shuffleAnswers(q));
+      return shuffled;
+    })();
+
+    window.questions = questions;
+
+    let currentQuestion = 0;
+    let score = 0;
+    let isAnswering = false;
+
+    const defaultConfig = {
+      quiz_title: "HOW WELL DO YOU KNOW TOM HOLLAND?",
+      start_button_text: "START!",
+      background_color: "#FF3B3B",
+      accent_color: "#FFD93D",
+      secondary_color: "#3B82F6",
+      text_color: "#000000",
+      panel_color: "#FFFFFF",
+      font_family: "Bangers"
+    };
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          const titleEl = document.getElementById('main-title');
+          if (titleEl) {
+            const titleText = config.quiz_title || defaultConfig.quiz_title;
+            const parts = titleText.split('TOM HOLLAND');
+            if (parts.length > 1) {
+              titleEl.innerHTML = `${parts[0]}<br><span style="color: ${config.secondary_color || defaultConfig.secondary_color}; font-size: 1.2em;">TOM HOLLAND${parts[1]}</span>`;
+            } else { titleEl.textContent = titleText; }
+            titleEl.style.color = config.background_color || defaultConfig.background_color;
+          }
+          const startText = document.getElementById('start-text');
+          if (startText) startText.textContent = config.start_button_text || defaultConfig.start_button_text;
+          const app = document.getElementById('app');
+          if (app) {
+            const bg = config.background_color || defaultConfig.background_color;
+            const accent = config.accent_color || defaultConfig.accent_color;
+            const secondary = config.secondary_color || defaultConfig.secondary_color;
+            app.style.background = `linear-gradient(135deg, ${bg} 0%, ${accent} 50%, ${secondary} 100%)`;
+          }
+          document.querySelectorAll('.comic-panel').forEach(panel => { panel.style.backgroundColor = config.panel_color || defaultConfig.panel_color; });
+          document.querySelectorAll('.speech-bubble').forEach(bubble => { bubble.style.backgroundColor = config.panel_color || defaultConfig.panel_color; });
+          const fontFamily = config.font_family || defaultConfig.font_family;
+          document.querySelectorAll('.font-bangers').forEach(el => { el.style.fontFamily = `${fontFamily}, cursive`; });
+        },
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            { get: () => config.background_color || defaultConfig.background_color, set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); } },
+            { get: () => config.accent_color || defaultConfig.accent_color, set: (value) => { config.accent_color = value; window.elementSdk.setConfig({ accent_color: value }); } },
+            { get: () => config.secondary_color || defaultConfig.secondary_color, set: (value) => { config.secondary_color = value; window.elementSdk.setConfig({ secondary_color: value }); } },
+            { get: () => config.panel_color || defaultConfig.panel_color, set: (value) => { config.panel_color = value; window.elementSdk.setConfig({ panel_color: value }); } },
+            { get: () => config.text_color || defaultConfig.text_color, set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); } }
+          ],
+          borderables: [],
+          fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (value) => { config.font_family = value; window.elementSdk.setConfig({ font_family: value }); } },
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["quiz_title", config.quiz_title || defaultConfig.quiz_title],
+          ["start_button_text", config.start_button_text || defaultConfig.start_button_text]
+        ])
+      });
+    }
+
+    window.startQuiz = function() {
+      if (titleIframe) titleIframe.src = '';
+      if (resultsIframe) resultsIframe.src = '';
+      playSound('correct');
+      document.getElementById('title-screen').classList.add('hidden');
+      document.getElementById('question-screen').classList.remove('hidden');
+      currentQuestion = 0;
+      score = 0;
+      updateScore();
+      loadQuestion();
+    };
+
+    function loadQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('question-text').textContent = q.question;
+      document.getElementById('answer-a').textContent = q.answers[0];
+      document.getElementById('answer-b').textContent = q.answers[1];
+      document.getElementById('answer-c').textContent = q.answers[2];
+      document.getElementById('answer-d').textContent = q.answers[3];
+      document.getElementById('current-q').textContent = currentQuestion + 1;
+      document.getElementById('progress-bar').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+
+      const gifImg = document.getElementById('question-gif');
+      gifImg.src = questionGifs[currentQuestion];
+      gifImg.onerror = function() { 
+        this.src = fallbackGif; 
+        this.onerror = null;
+      };
+
+      document.querySelectorAll('.starburst-btn').forEach(btn => { btn.disabled = false; btn.style.opacity = '1'; });
+      isAnswering = false;
+    }
+
+    window.checkAnswer = function(index) {
+      if (isAnswering) return;
+      isAnswering = true;
+      const q = questions[currentQuestion];
+      const feedback = document.getElementById('feedback');
+      const feedbackContent = document.getElementById('feedback-content');
+      const feedbackText = document.getElementById('feedback-text');
+      document.querySelectorAll('.starburst-btn').forEach(btn => { btn.disabled = true; btn.style.opacity = '0.6'; });
+
+      if (index === q.correct) {
+        score++;
+        updateScore();
+        feedbackContent.style.background = '#10B981';
+        feedbackText.textContent = 'CORRECT! 💥';
+        feedbackText.style.color = '#fff';
+        playSound('correct');
+      } else {
+        feedbackContent.style.background = '#FF3B3B';
+        feedbackText.textContent = 'WRONG! 💔';
+        feedbackText.style.color = '#fff';
+        document.querySelector('.speech-bubble').classList.add('shake');
+        setTimeout(() => { document.querySelector('.speech-bubble').classList.remove('shake'); }, 400);
+        playSound('wrong');
+      }
+
+      feedback.classList.remove('hidden');
+      feedbackContent.classList.remove('pow-animate');
+      void feedbackContent.offsetWidth;
+      feedbackContent.classList.add('pow-animate');
+      setTimeout(() => {
+        feedback.classList.add('hidden');
+        currentQuestion++;
+        if (currentQuestion < questions.length) loadQuestion();
+        else showResults();
+      }, 1200);
+    };
+
+    function updateScore() { document.getElementById('score').textContent = score; }
+
+    function showResults() {
+      if (titleIframe) titleIframe.src = '';
+      if (resultsIframe) resultsIframe.src = RESULTS_VIDEO_SRC;
+      document.getElementById('question-screen').classList.add('hidden');
+      document.getElementById('results-screen').classList.remove('hidden');
+      document.getElementById('final-score').textContent = score + '/10';
+      let message = '';
+      if (score === 10) message = "AMAZING! You're a true Tom Holland superfan! 🕷️🏆";
+      else if (score >= 8) message = "GREAT JOB! You really know your Tom Holland facts! 🌟";
+      else if (score >= 6) message = "Not bad! You know quite a bit about Tom! 👍";
+      else if (score >= 4) message = "You've got some learning to do, web-head! 📚";
+      else message = "Time to watch more Tom Holland movies! 🎬";
+      document.getElementById('result-message').textContent = message;
+      playSound('correct');
+    }
+
+    window.restartQuiz = function() {
+      if (resultsIframe) resultsIframe.src = '';
+      if (titleIframe) titleIframe.src = TITLE_VIDEO_SRC;
+      questions = shuffleArray([...baseQuestions]).map(q => shuffleAnswers(q));
+      window.questions = questions;
+      currentQuestion = 0;
+      score = 0;
+      document.getElementById('results-screen').classList.add('hidden');
+      document.getElementById('title-screen').classList.remove('hidden');
+    };
+  })();
+</script>
+</body>
+</html>
