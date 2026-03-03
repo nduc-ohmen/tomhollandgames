@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tom Holland Quiz · Spider‑Scramble + GIFs!</title>
+  <title>Tom Holland Quiz · 5 câu hỏi</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Bangers&amp;family=Comic+Neue:wght@700&amp;display=swap" rel="stylesheet">
@@ -211,11 +211,11 @@
     <div class="w-full max-w-2xl mb-4 sm:mb-6">
       <div class="comic-panel bg-white p-2 sm:p-3">
         <div class="flex justify-between items-center font-comic text-base sm:text-lg font-bold">
-          <span>Question <span id="current-q">1</span>/5</span>
+          <span>Question <span id="current-q">1</span>/5</span>  <!-- Changed to 5 -->
           <span>Score: <span id="score">0</span></span>
         </div>
         <div class="h-3 sm:h-4 bg-gray-200 border-2 border-black mt-2 rounded-full overflow-hidden">
-          <div id="progress-bar" class="h-full transition-all duration-500" style="width: 20%; background: linear-gradient(90deg, #FF3B3B, #FFD93D, #3B82F6);"></div>
+          <div id="progress-bar" class="h-full transition-all duration-500" style="width: 20%; background: linear-gradient(90deg, #FF3B3B, #FFD93D, #3B82F6);"></div> <!-- 1/5 = 20% -->
         </div>
       </div>
     </div>
@@ -274,7 +274,7 @@
         <h2 class="font-bangers text-4xl sm:text-5xl md:text-6xl mb-4" style="color: #FF3B3B; text-shadow: 3px 3px 0 #000;">QUIZ COMPLETE!</h2>
         <div class="my-6 sm:my-8">
           <p class="font-comic text-xl sm:text-2xl text-black mb-2">Your Score:</p>
-          <p id="final-score" class="font-bangers text-6xl sm:text-7xl md:text-8xl" style="color: #3B82F6; text-shadow: 4px 4px 0 #FFD93D;">0/5</p>
+          <p id="final-score" class="font-bangers text-6xl sm:text-7xl md:text-8xl" style="color: #3B82F6; text-shadow: 4px 4px 0 #FFD93D;">0/5</p> <!-- Changed to 5 -->
         </div>
         <p id="result-message" class="font-comic text-lg sm:text-xl text-black mb-4">Message goes here!</p>
         
@@ -325,7 +325,7 @@
     const TITLE_VIDEO_SRC = "https://www.youtube.com/embed/JfVOs4VSpmA?si=wL0SYn4D2tM1xEqI&controls=1&modestbranding=1&rel=0";
     const RESULTS_VIDEO_SRC = "https://www.youtube.com/embed/6ZfuNTqbHE8?si=J8kL3p9R5vF7q2Xc&controls=1&modestbranding=1&rel=0";
 
-    // ---------- QUIZ DATA ----------
+    // ---------- QUIZ DATA (chỉ còn 5 câu) ----------
     const baseQuestions = [
       { question: "What is Tom Holland's full name?", answers: ["Thomas Stanley Holland", "Thomas James Holland", "Thomas William Holland", "Thomas Henry Holland"], correct: 0 },
       { question: "In which year was Tom Holland born?", answers: ["1994", "1996", "1998", "2000"], correct: 1 },
@@ -334,12 +334,12 @@
       { question: "What sport did Tom Holland train in as a child?", answers: ["Football", "Gymnastics", "Ballet & Dance", "Swimming"], correct: 2 }
     ];
 
-    // ✅ Updated GIFs - 5 questions
+    // ✅ GIFs tương ứng cho 5 câu
     const questionGifs = [
       "https://media3.giphy.com/media/8ie7JFGX3iWEE/giphy.gif", // Q0: Full name
       "https://media4.giphy.com/media/kstNJIHJyO8h3DUJve/giphy.gif", // Q1: Birth year
       "https://media1.giphy.com/media/uIPnfJ5VK0vXJExFre/giphy.gif", // Q2: First major role
-      "https://i.imgur.com/ALOYSdb.gif", // Q3: Debut as Spider-Man
+      "https://i.imgur.com/ALOYSdb.gif",                           // Q3: Debut as Spider-Man
       "https://media2.giphy.com/media/PzydsqG2EyFYkYF6yf/giphy.gif"  // Q4: Sport
     ];
 
@@ -364,6 +364,7 @@
       };
     }
 
+    // Tạo mảng 5 câu hỏi xáo trộn
     let questions = (function() {
       let shuffled = shuffleArray([...baseQuestions]);
       shuffled = shuffled.map(q => shuffleAnswers(q));
@@ -510,12 +511,12 @@
       if (resultsIframe) resultsIframe.src = RESULTS_VIDEO_SRC;
       document.getElementById('question-screen').classList.add('hidden');
       document.getElementById('results-screen').classList.remove('hidden');
-      document.getElementById('final-score').textContent = score + '/5';
+      document.getElementById('final-score').textContent = score + '/5'; // Cập nhật điểm tối đa
       let message = '';
       if (score === 5) message = "AMAZING! You're a true Tom Holland superfan! 🕷️🏆";
-      else if (score === 4) message = "GREAT JOB! You really know your Tom Holland facts! 🌟";
-      else if (score === 3) message = "Not bad! You know quite a bit about Tom! 👍";
-      else if (score === 2) message = "You've got some learning to do, web-head! 📚";
+      else if (score >= 4) message = "GREAT JOB! You really know your Tom Holland facts! 🌟";
+      else if (score >= 3) message = "Not bad! You know quite a bit about Tom! 👍";
+      else if (score >= 2) message = "You've got some learning to do, web-head! 📚";
       else message = "Time to watch more Tom Holland movies! 🎬";
       document.getElementById('result-message').textContent = message;
       playSound('correct');
@@ -534,5 +535,4 @@
   })();
 </script>
 </body>
-
 </html>
