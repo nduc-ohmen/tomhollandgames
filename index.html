@@ -211,11 +211,11 @@
     <div class="w-full max-w-2xl mb-4 sm:mb-6">
       <div class="comic-panel bg-white p-2 sm:p-3">
         <div class="flex justify-between items-center font-comic text-base sm:text-lg font-bold">
-          <span>Question <span id="current-q">1</span>/10</span>
+          <span>Question <span id="current-q">1</span>/5</span>
           <span>Score: <span id="score">0</span></span>
         </div>
         <div class="h-3 sm:h-4 bg-gray-200 border-2 border-black mt-2 rounded-full overflow-hidden">
-          <div id="progress-bar" class="h-full transition-all duration-500" style="width: 10%; background: linear-gradient(90deg, #FF3B3B, #FFD93D, #3B82F6);"></div>
+          <div id="progress-bar" class="h-full transition-all duration-500" style="width: 20%; background: linear-gradient(90deg, #FF3B3B, #FFD93D, #3B82F6);"></div>
         </div>
       </div>
     </div>
@@ -274,7 +274,7 @@
         <h2 class="font-bangers text-4xl sm:text-5xl md:text-6xl mb-4" style="color: #FF3B3B; text-shadow: 3px 3px 0 #000;">QUIZ COMPLETE!</h2>
         <div class="my-6 sm:my-8">
           <p class="font-comic text-xl sm:text-2xl text-black mb-2">Your Score:</p>
-          <p id="final-score" class="font-bangers text-6xl sm:text-7xl md:text-8xl" style="color: #3B82F6; text-shadow: 4px 4px 0 #FFD93D;">0/10</p>
+          <p id="final-score" class="font-bangers text-6xl sm:text-7xl md:text-8xl" style="color: #3B82F6; text-shadow: 4px 4px 0 #FFD93D;">0/5</p>
         </div>
         <p id="result-message" class="font-comic text-lg sm:text-xl text-black mb-4">Message goes here!</p>
         
@@ -331,26 +331,16 @@
       { question: "In which year was Tom Holland born?", answers: ["1994", "1996", "1998", "2000"], correct: 1 },
       { question: "What was Tom Holland's first major role before Spider-Man?", answers: ["The Impossible", "Billy Elliot the Musical", "In the Heart of the Sea", "How I Live Now"], correct: 1 },
       { question: "Which film marked Tom's debut as Spider-Man?", answers: ["Spider-Man: Homecoming", "Captain America: Civil War", "Avengers: Infinity War", "Spider-Man: Far From Home"], correct: 1 },
-      { question: "What sport did Tom Holland train in as a child?", answers: ["Football", "Gymnastics", "Ballet & Dance", "Swimming"], correct: 2 },
-      { question: "How many brothers does Tom Holland have?", answers: ["One", "Two", "Three", "None"], correct: 2 },
-      { question: "What is the name of Tom Holland's production company?", answers: ["Web Productions", "Holland Studios", "The Brothers Trust", "Spider Films"], correct: 2 },
-      { question: "Which city was Tom Holland born in?", answers: ["Manchester", "London", "Birmingham", "Liverpool"], correct: 1 },
-      { question: "In Uncharted (2022), which video game character does Tom play?", answers: ["Sully", "Nathan Drake", "Sam Drake", "Rafe Adler"], correct: 1 },
-      { question: "What is Tom Holland famously known for accidentally doing?", answers: ["Forgetting his lines", "Spoiling Marvel movies", "Missing premieres", "Falling during stunts"], correct: 1 }
+      { question: "What sport did Tom Holland train in as a child?", answers: ["Football", "Gymnastics", "Ballet & Dance", "Swimming"], correct: 2 }
     ];
 
-    // ✅ Updated GIFs - all your requested links!
+    // ✅ Updated GIFs - 5 questions
     const questionGifs = [
       "https://media3.giphy.com/media/8ie7JFGX3iWEE/giphy.gif", // Q0: Full name
       "https://media4.giphy.com/media/kstNJIHJyO8h3DUJve/giphy.gif", // Q1: Birth year
       "https://media1.giphy.com/media/uIPnfJ5VK0vXJExFre/giphy.gif", // Q2: First major role
-      "https://i.imgur.com/ALOYSdb.gif", // Q3: Debut as Spider-Man (YOUR NEW LINK)
-      "https://media2.giphy.com/media/PzydsqG2EyFYkYF6yf/giphy.gif", // Q4: Sport (unchanged)
-      "https://i.pinimg.com/originals/44/46/16/4446160a0a97c7ac1ad8299b1b7dbeb3.gif", // Q5: Brothers (your Pin link)
-      "https://media0.giphy.com/media/SF9Z0shNT07T2/giphy.gif", // Q6: Production company
-      "https://media1.giphy.com/media/0CtFN4lxf5t8Bzi0ry/giphy.gif", // Q7: Birth city
-      "https://media2.giphy.com/media/PzydsqG2EyFYkYF6yf/giphy.gif", // Q8: Uncharted (updated)
-      "https://media.giphy.com/media/26tPpK1y0I1YxSxOM/giphy.gif"  // Q9: Spoilers (kept working one)
+      "https://i.imgur.com/ALOYSdb.gif", // Q3: Debut as Spider-Man
+      "https://media2.giphy.com/media/PzydsqG2EyFYkYF6yf/giphy.gif"  // Q4: Sport
     ];
 
     const fallbackGif = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='20' y='55' font-family='Comic Neue' font-size='18' fill='%23000'%3ETom GIF%3C/text%3E%3C/svg%3E";
@@ -520,12 +510,12 @@
       if (resultsIframe) resultsIframe.src = RESULTS_VIDEO_SRC;
       document.getElementById('question-screen').classList.add('hidden');
       document.getElementById('results-screen').classList.remove('hidden');
-      document.getElementById('final-score').textContent = score + '/10';
+      document.getElementById('final-score').textContent = score + '/5';
       let message = '';
-      if (score === 10) message = "AMAZING! You're a true Tom Holland superfan! 🕷️🏆";
-      else if (score >= 8) message = "GREAT JOB! You really know your Tom Holland facts! 🌟";
-      else if (score >= 6) message = "Not bad! You know quite a bit about Tom! 👍";
-      else if (score >= 4) message = "You've got some learning to do, web-head! 📚";
+      if (score === 5) message = "AMAZING! You're a true Tom Holland superfan! 🕷️🏆";
+      else if (score === 4) message = "GREAT JOB! You really know your Tom Holland facts! 🌟";
+      else if (score === 3) message = "Not bad! You know quite a bit about Tom! 👍";
+      else if (score === 2) message = "You've got some learning to do, web-head! 📚";
       else message = "Time to watch more Tom Holland movies! 🎬";
       document.getElementById('result-message').textContent = message;
       playSound('correct');
@@ -544,4 +534,5 @@
   })();
 </script>
 </body>
+
 </html>
